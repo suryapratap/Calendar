@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="js/jquery-1.6.2.min.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/Calendar.js"></script>
+    <script src="js/Data.js"></script>
+</head>
+<body>
+<div class="tab" style="width:80%">
+    <div class="flft">
+        <span href="#" data-next="Month" class="tab next">Month Calendar</span>
+        <span href="#" data-next="Week" class="tab next">Week Calendar</span>
+        <span href="#" data-next="Day" class="tab next">Day Calendar</span>
+        <span id='log' class="tab">
+    </span>
+        <br/>
+        <br/>
+    </div>
+    <div id="calendar" style="width:100%;height:100%;background-color:#888;">
+    </div>
+</div>
+<br/>
+<script type="text/javascript">
+    var cal = new Calendar('calendar');
+    cal.makeMonthCalendar('2013 Jun 29');
+
+    function log(msg) {
+        $('#log').html('<span>' + msg + '</span>');
+    }
+
+    function getParentTd(obj) {
+        if (obj == null || obj == document.body) return null;
+        return obj.tagName === 'TD' ? obj : getParentTd(obj.parentNode);
+    }
+
+    $(function () {
+        var ele = $('#calendar');
+        ele.click(function (s) {
+            var t = s.target;
+
+            if (t.className == 'rightArrow') {
+                cal.moveNext();
+            }
+            if (t.className == 'leftArrow') {
+                cal.movePrevious();
+            }
+            var obj = getParentTd(t);
+            if (obj && obj.tagName === "TD") {
+                var target = $(obj);
+                var satId = target.data('date');
+                cal.makeDayCalendar(satId);
+            }
+            loadData(data.values, cal.useHourInId());
+        });
+
+        $('.next').click(function (s) {
+            var part = $(s.target).data('next');
+            cal['make' + part + 'Calendar']();
+            loadData(data.values, cal.useHourInId());
+        });
+
+        $('.rightArrow').click(function (s) {
+            cal.moveNext();
+        });
+
+        loadData(data.values, cal.useHourInId());
+    });
+</script>
+</body>
+</html>
